@@ -6,7 +6,12 @@ MAC_BUILD_PATH = $(BUILD_PATH)/darwin/idl
 
 export VERSION=$(shell gogitver)
 
-build:
+documentation:
+	go run internal/cobraDocs.go
+	git add docs/idl docs/idl-repository
+	git commit -m "(+semver: patch) Updated documentation" docs/idl docs/idl-repository || echo 'Ignoring "no changes" error'
+
+build: documentation
 	mkdir -p artifacts/linux artifacts/arm artifacts/windows artifacts/darwin
 	GOOS=linux GOARCH=amd64 go build -o $(LINUX_BUILD_PATH) ./cmd/idl
 	GOOS=linux GOARCH=arm go build -o $(LINUX_ARM_BUILD_PATH) ./cmd/idl
